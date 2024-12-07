@@ -1,0 +1,4 @@
+logs
+*/__pycache__
+data/credentials.json
+data/productId_sku_dict.json
