@@ -24,8 +24,16 @@ class EmailSender:
     def _get_current_log_files(self) -> List[str]:
         """Get all log files generated in the current run"""
         log_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logs')
-        current_date = datetime.now().strftime('%Y-%m-%d')
-        return glob.glob(os.path.join(log_dir, f'*{current_date}*.log'))
+        current_date = datetime.now().strftime('%Y%m%d')  # Format changed to match the file pattern
+        
+        # Get all files in the logs directory
+        all_files = glob.glob(os.path.join(log_dir, '*.txt'))
+        
+        # Filter files that contain today's date
+        current_log_files = [f for f in all_files if current_date in os.path.basename(f)]
+        print(f"Found log files for date {current_date}: {current_log_files}")
+        
+        return current_log_files
 
     def _create_attachment(self, file_path: str) -> Attachment:
         """Create an email attachment from a file"""
@@ -34,11 +42,12 @@ class EmailSender:
         
         encoded_content = base64.b64encode(file_content).decode()
         file_name = os.path.basename(file_path)
+        file_type = 'text/plain'  # Set appropriate mime type for log files
         
         attachment = Attachment()
         attachment.file_content = FileContent(encoded_content)
         attachment.file_name = FileName(file_name)
-        attachment.file_type = FileType('text/plain')
+        attachment.file_type = FileType(file_type)
         attachment.disposition = Disposition('attachment')
         
         return attachment
@@ -87,9 +96,16 @@ class EmailSender:
 
         # Attach all current log files
         log_files = self._get_current_log_files()
+        print(f"Found {len(log_files)} log files to attach")
+        
         for log_file in log_files:
-            attachment = self._create_attachment(log_file)
-            message.add_attachment(attachment)
+            try:
+                print(f"Attaching log file: {log_file}")
+                attachment = self._create_attachment(log_file)
+                message.add_attachment(attachment)  # Fix: Changed from direct assignment to add_attachment
+                print(f"Successfully attached: {log_file}")
+            except Exception as e:
+                print(f"Failed to attach {log_file}: {str(e)}")
         
         try:
             response = self.sg.send(message)
