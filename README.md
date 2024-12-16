@@ -31,62 +31,67 @@ pip install -r requirements.txt
 
 ## Usage
 
-1. Update the `credentials.json` file in the `data` directory with your CLF and Shopify credentials, as well as your SendGrid API key and email addresses.
-2. Run the main script:
+1. **Update Credentials**: 
+   - Update the `credentials.json` file in the `data` directory with your CLF and Shopify credentials, as well as your SendGrid API key and email addresses.
 
-```bash
-python main.py
-```
+2. **Run the Main Script**:
+   - Execute the main script to start the stock update process:
+   ```bash
+   python main.py
+   ```
 
-## Email Notifications
+## Functionalities
 
-The script sends email notifications using SendGrid in the following scenarios:
-- When the stock update process completes successfully, including a summary of products updated and attached logs.
-- When the token generation limit is exceeded, notifying that the script has stopped due to token generation limits.
+### 1. Automated Stock Level Synchronization
+- The script retrieves stock levels from CLF Distribution and updates the corresponding inventory levels in Shopify.
 
-## Logging
+### 2. Email Notifications
+- The script sends email notifications using SendGrid in the following scenarios:
+  - **Completion Notification**: When the stock update process completes successfully, including a summary of products updated and attached logs.
+  - **Token Generation Limit Exceeded**: When the token generation limit is exceeded, notifying that the script has stopped due to token generation limits.
 
-Logs are stored in the `logs` directory. The script generates logs for both successful operations and errors, which can be useful for debugging and monitoring.
+### 3. Logging
+- Logs are stored in the `logs` directory. The script generates logs for both successful operations and errors, which can be useful for debugging and monitoring.
 
-## Features
+### 4. Error Handling
+- The system includes comprehensive error handling for:
+  - Network errors
+  - API authentication failures
+  - Rate limiting
+  - Data parsing errors
+  - Product not found scenarios
 
-- Automated stock level synchronization
-- Comprehensive error handling and logging
-- Rate limit handling for Shopify API
-- Automatic token refresh for CLF API
-- Detailed logging with separate files for different types of logs
+### 5. Rate Limit Handling
+- The script implements rate limit handling for the Shopify API to ensure compliance with API usage limits.
+
+### 6. Automatic Token Refresh
+- The script automatically refreshes the authentication token for the CLF API when it expires.
+
+### 7. Detailed Logging
+- The script generates detailed logs with separate files for different types of logs (general, crash, and update logs).
 
 ## Setup
 
-1. Install dependencies:
+1. **Install Dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
 
-2. Configure API credentials:
-   - CLF Distribution credentials are currently in `clf_api.py`
-   - Shopify credentials are in `shopify_api.py`
-   
-   Note: In production, these should be moved to environment variables.
+2. **Configure API Credentials**:
+   - CLF Distribution credentials are currently in `clf_api.py`.
+   - Shopify credentials are in `shopify_api.py`.
+   - Note: In production, these should be moved to environment variables.
 
-3. Ensure the `logs` directory exists (will be created automatically if not present)
-
-## Error Handling
-
-The system includes comprehensive error handling for:
-- Network errors
-- API authentication failures
-- Rate limiting
-- Data parsing errors
-- Product not found scenarios
+3. **Ensure the Logs Directory Exists**:
+   - The `logs` directory will be created automatically if not present.
 
 ## Future Improvements
 
-1. Move credentials to environment variables
-2. Add configuration file for API endpoints and other settings
-3. Implement more robust rate limit handling
-4. Add automated testing
-5. Add monitoring and alerting capabilities
+1. Move credentials to environment variables.
+2. Add a configuration file for API endpoints and other settings.
+3. Implement more robust rate limit handling.
+4. Add automated testing.
+5. Add monitoring and alerting capabilities.
 
 ## License
 
