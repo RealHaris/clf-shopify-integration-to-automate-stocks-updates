@@ -22,14 +22,14 @@ class EmailSender:
     def _get_current_log_files(self, start_date: str) -> List[str]:
         """Get all log files generated from the start_date"""
         log_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logs')
-        formatted_date = datetime.strptime(start_date, '%Y-%m-%d').strftime('%Y%m%d')
+        # formatted_date = datetime.strptime(start_date, '%Y-%m-%d').strftime('%Y%m%d')
         
         # Get all files in the logs directory
         all_files = glob.glob(os.path.join(log_dir, '*.txt'))
         
         # Filter files that contain the formatted date
-        current_log_files = [f for f in all_files if formatted_date in os.path.basename(f)]
-        print(f"Found log files for date {formatted_date}: {current_log_files}")
+        current_log_files = [f for f in all_files if start_date in os.path.basename(f)]
+        print(f"Found log files for date {start_date}: {current_log_files}")
         
         return current_log_files
 

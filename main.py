@@ -107,7 +107,7 @@ def main():
                     'total_issues': crash_stats['total']
                 }
                 # Pass start_time_str to the email sender
-                email_sender.send_token_limit_email(stats, start_time_str)
+                email_sender.send_token_limit_email(stats, start_date_str_crash_logs)
                 general_logger.error("Token generation limit exceeded. Script stopped.")
             return
             
@@ -121,7 +121,7 @@ def main():
                 barcode = clf_api.get_product_barcode(values)
                 
                 # Update Shopify inventory if barcode exists
-                if barcode in productId_sku_dict.values():
+                if barcode in productId_sku_dict.values() and barcode is not None and inv_qty is not None:
                     # Get Shopify product details
                     product_id_to_update, inventory_item_id = shopify_api.get_product_id_by_sku(
                         keylist[vallist.index(barcode)]
@@ -141,8 +141,12 @@ def main():
                     else:
                         crash_logger.error(f"Failed to get product/inventory IDs for barcode: {barcode}")
                 else:
-                    general_logger.warning(f"Barcode not found in product dictionary: {barcode}")
+                    if inv_qty is None:
+                        crash_logger.error(f"Failed to get stock level for SKU: {values}")
                     
+                    crash_logger.warning(f"Barcode not found in product dictionary: {barcode}")
+                    general_logger.warning(f"Barcode not found in product dictionary: {barcode}")  
+                                      
             except Exception as e:
                 crash_logger.error(f"""
                 Processing Error:
@@ -171,7 +175,7 @@ def main():
             'total_skus': len(skus)
         }       
         # Pass start_time_str to the email sender
-        email_sender.send_completion_email(stats, start_time_str)
+        email_sender.send_completion_email(stats, start_date_str_crash_logs)
         general_logger.info(f"""
         Stock update process completed:
         Start Time: {start_time_str}
@@ -207,7 +211,7 @@ def main():
             'total_skus': len(skus) if 'skus' in locals() else 0
         }
         # Pass start_time_str to the email sender
-        email_sender.send_completion_email(stats, start_time_str)
+        email_sender.send_completion_email(stats, start_date_str_crash_logs)
     finally:
         end_time = datetime.now()
         end_time_str = end_time.strftime('%Y-%m-%d %H:%M:%S')

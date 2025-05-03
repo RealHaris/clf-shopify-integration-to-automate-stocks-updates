@@ -390,8 +390,8 @@ class CLFAPI:
                     if self.check_auth_error(tree):
                         self.auth_token = self.get_authentication_token()
                         if self.auth_token:
-                            return self.get_product_price_and_barcode(product_code)
-                        return None, None
+                            return self.get_product_barcode(product_code)
+                        return None
 
                     namespace2 = {'soap': 'http://schemas.xmlsoap.org/soap/envelope/',
                             'clf': 'http://services.clfdistribution.com/CLFWebOrdering'}
